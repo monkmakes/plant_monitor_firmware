@@ -1,10 +1,10 @@
 // ATTiny 1614, 8MHz max. for 3.3V
 
-// softwre not final - the RGB LED looks jumpy with quite small range of values - no idea why.
-
 #include "AHT10.h"
 
-/* Protocol - single letter command all responses as a string in decimal
+/* License - Released by MonkMakes under MIT license: https://github.com/monkmakes/plant_monitor_firmware/blob/main/LICENSE
+ *  
+ *  Protocol - single letter command all responses as a string in decimal
  *  w -> w=230\n    0..255 
  *  h -> h=50\n     0..100 
  *  t -> t=20.4\n   temperature in degrees C, decimal
@@ -14,8 +14,6 @@
  *  l -> LED off
  *  f -> firmware version
  *  
- *  
- *  This version pins changed from 1b. So this won't run on 1a hardware.
  */ 
 
  const char* firmwareVersion = "1c";
