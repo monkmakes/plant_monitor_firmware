@@ -1,4 +1,12 @@
-// ATTiny 1614, 8MHz max. for 3.3V
+ // ATTiny 1614, 8MHz max. for 3.3V
+// USES DAC, so MUST be ATTiny1614, or ATTiny814
+//              =================================
+
+/*
+ * Change in 1e - cope with variants of AHT10 that don't return 1 when begin() called.
+ * Any problem getting t and h will be caught by tester anyway.
+ */
+
 
 #include "AHT10.h"
 
@@ -16,7 +24,7 @@
  *  
  */ 
 
- const char* firmwareVersion = "1c";
+const char* firmwareVersion = "1e";
 
 const long dry = 13; // calibrate for new board design - dry / in water r (raw) readings
 const long wet = 430;
@@ -34,7 +42,8 @@ const int greenPin = 10;
 const int bluePin = 0;
 const int dacPin = 2;
 
-long samplePeriod = 2000;
+const long samplePeriod = 500;
+const int numSamples = 5;  // bigger number, less noise but slower.
 
 AHT10 aht = AHT10(0x38, AHT10_SENSOR);
 
@@ -52,11 +61,8 @@ void setup() {
   pinMode(senseOutPinB, OUTPUT);
   Serial.begin(9600);
   selfTest();
-  delay(1000);
-  if (aht.begin() != 1) {
-    Serial.println("ERROR");
-    error();
-  }
+  delay(500);
+  aht.begin();
   Serial.println("OK");
 }
 
@@ -133,12 +139,11 @@ int readMoisture1() {
 }
 
 int readMoisture() {
-  long n = 20;
   long total = 0;
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < numSamples; i++) {
     total += readMoisture1();
   }
-  int m = total / n;
+  int m = total / numSamples;
   return m;
 }
 
